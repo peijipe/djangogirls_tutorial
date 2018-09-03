@@ -19,7 +19,7 @@ def create(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            return redirect(detail, pk=post.pk)
+            return redirect('blog:detail', pk=post.pk)
     
     else:
         form = PostForm()

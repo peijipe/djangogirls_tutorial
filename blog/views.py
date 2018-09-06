@@ -24,7 +24,7 @@ def create(request):
     else:
         form = PostForm()
 
-    return render(request, 'blog/edit.html', {'form': form})
+    return render(request, 'blog/create.html', {'form': form})
 
 def edit(request, pk):
     post = get_object_or_404(Post, pk=pk)

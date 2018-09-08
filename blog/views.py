@@ -7,10 +7,10 @@ from .forms import PostForm
 def index(request):
     title = request.GET.get("title")
     if title is None:
-        posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+        posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
         return render(request, 'blog/index.html', {'posts': posts})
 
-    search_posts = Post.objects.filter(title__contains=title).order_by('published_date')
+    search_posts = Post.objects.filter(title__contains=title).order_by('-published_date')
     return render(request, 'blog/index.html', {'posts': search_posts})
     
 def detail(request, pk):

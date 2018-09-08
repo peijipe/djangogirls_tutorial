@@ -1,6 +1,15 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
+
+<form action="#" method="get">
+    <div>
+        <label for="title">タイトル:</label>
+        <input type="text" id="title" name="title">
+        <button type="submit">検索</button>
+    </div>
+</form>
+
 {% for post in posts%}
     <div class="post">
         <div class="date">

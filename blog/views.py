@@ -5,8 +5,13 @@ from .forms import PostForm
 
 
 def index(request):
-    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
-    return render(request, 'blog/index.html', {'posts': posts})
+    title = request.GET.get("title")
+    if title is None:
+        posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+        return render(request, 'blog/index.html', {'posts': posts})
+
+    search_posts = Post.objects.filter(title__contains=title).order_by('published_date')
+    return render(request, 'blog/index.html', {'posts': search_posts})
     
 def detail(request, pk):
     post = get_object_or_404(Post, pk=pk)

@@ -46,3 +46,7 @@ def edit(request, pk):
         form = PostForm(instance=post)
         
     return render(request, 'blog/edit.html', {'form': form})
+
+def delete(request, pk):
+    post = Post.objects.filter(pk=pk).delete()
+    return render(request, 'blog/delete.html', {'post': post})

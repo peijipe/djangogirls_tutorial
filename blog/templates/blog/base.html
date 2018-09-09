@@ -14,6 +14,10 @@
                 <a href="{% url 'blog:create' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
             {% endif %}
             <h1><a href="{% url 'blog:index' %}">Asia Sports</a></h1>
+            {% if user.is_authenticated%}
+                <p>こんにちは、{{ user }}さん</p>
+                <a href="{% url 'logout' %}" class="logout">Logout</a>
+            {% endif %}
         </div>
         
         <div class="content container">

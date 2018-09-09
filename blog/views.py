@@ -2,8 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from .models import Post
 from .forms import PostForm
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def index(request):
     title = request.GET.get("title")
     if title is None:
@@ -12,11 +14,13 @@ def index(request):
 
     search_posts = Post.objects.filter(title__contains=title).order_by('-published_date')
     return render(request, 'blog/index.html', {'posts': search_posts})
-    
+
+@login_required
 def detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'blog/detail.html', {'post': post})
-    
+
+@login_required
 def create(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -31,6 +35,7 @@ def create(request):
 
     return render(request, 'blog/create.html', {'form': form})
 
+@login_required
 def edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == 'POST':
@@ -47,6 +52,8 @@ def edit(request, pk):
         
     return render(request, 'blog/edit.html', {'form': form})
 
+@login_required
 def delete(request, pk):
     post = Post.objects.filter(pk=pk).delete()
     return render(request, 'blog/delete.html', {'post': post})
+

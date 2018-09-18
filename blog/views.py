@@ -8,15 +8,22 @@ from django.db.models import Q
 
 @login_required
 def index(request):
-    keywords = request.GET.get("keyword")
-    if keywords is None:
+    keywords1 = request.GET.get("keyword1")
+    keywords2 = request.GET.get("keyword2")
+    if keywords1 is None and keywords2 is None:
         posts = Post.objects.filter(
             published_date__lte=timezone.now()
         ).order_by('-published_date')
         return render(request, 'blog/index.html', {'posts': posts})
 
+    if keywords2 is None:
+        search_posts = Post.objects.filter(
+            title__contains=keywords1, text__contains=keywords1
+        ).order_by('-published_date')
+        return render(request, 'blog/index.html', {'posts': search_posts})
+
     search_posts = Post.objects.filter(
-        Q(title__contains=keywords) | Q(text__contains=keywords)
+        Q(title__contains=keywords2) | Q(text__contains=keywords2)
     ).order_by('-published_date')
     return render(request, 'blog/index.html', {'posts': search_posts})
 

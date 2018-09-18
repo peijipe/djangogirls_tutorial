@@ -3,16 +3,21 @@ from django.utils import timezone
 from .models import Post
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 
 @login_required
 def index(request):
-    title = request.GET.get("title")
-    if title is None:
-        posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
+    keywords = request.GET.get("keyword")
+    if keywords is None:
+        posts = Post.objects.filter(
+            published_date__lte=timezone.now()
+        ).order_by('-published_date')
         return render(request, 'blog/index.html', {'posts': posts})
 
-    search_posts = Post.objects.filter(title__contains=title).order_by('-published_date')
+    search_posts = Post.objects.filter(
+        Q(title__contains=keywords) | Q(text__contains=keywords)
+    ).order_by('-published_date')
     return render(request, 'blog/index.html', {'posts': search_posts})
 
 @login_required

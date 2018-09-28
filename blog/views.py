@@ -8,29 +8,41 @@ from django.db.models import Q
 
 @login_required
 def index(request):
-    keywords1 = request.GET.get("keyword1")
-    keywords2 = request.GET.get("keyword2")
-    if keywords1 is None and keywords2 is None:
-        posts = Post.objects.filter(
-            published_date__lte=timezone.now()
-        ).order_by('-published_date')
-        return render(request, 'blog/index.html', {'posts': posts})
+    and_keywords = request.GET.get("keyword1")
+    or_keywords = request.GET.get("keyword2")
 
-    if keywords2 is None:
-        search_posts = Post.objects.filter(
-            title__contains=keywords1, text__contains=keywords1
-        ).order_by('-published_date')
-        return render(request, 'blog/index.html', {'posts': search_posts})
+    if and_keywords:
+        and_key_list = and_keywords.replace('　', ' ').split(' ')
 
-    search_posts = Post.objects.filter(
-        Q(title__contains=keywords2) | Q(text__contains=keywords2)
-    ).order_by('-published_date')
+        # 全件取得
+        search_posts = Post.objects.all()
+
+        for data in and_key_list:
+            search_posts = search_posts.filter(title__contains=data, text__contains=data)
+
+        search_posts = search_posts.order_by('-published_date')
+        return render(request, 'blog/index.html', {'posts': search_posts, 'and_keywords': and_keywords})
+
+    if or_keywords:
+        or_key_list = or_keywords.replace('　', ' ').split(' ')
+        queries = [Q(title__contains=key) | Q(text__contains=key) for key in or_key_list]
+        print(queries)
+        query = queries.pop()
+        for item in queries:
+            query |= item
+        print(query)
+        search_posts = Post.objects.filter(query).order_by('-published_date')
+        return render(request, 'blog/index.html', {'posts': search_posts, 'or_keywords': or_keywords})
+
+    search_posts = Post.objects.all().order_by('-published_date')
     return render(request, 'blog/index.html', {'posts': search_posts})
+
 
 @login_required
 def detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'blog/detail.html', {'post': post})
+
 
 @login_required
 def create(request):
@@ -46,6 +58,7 @@ def create(request):
         form = PostForm()
 
     return render(request, 'blog/create.html', {'form': form})
+
 
 @login_required
 def edit(request, pk):
@@ -63,6 +76,7 @@ def edit(request, pk):
         form = PostForm(instance=post)
         
     return render(request, 'blog/edit.html', {'form': form})
+
 
 @login_required
 def delete(request, pk):

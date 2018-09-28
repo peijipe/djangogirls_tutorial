@@ -31,7 +31,8 @@
                         <h3>AND条件</h3>
                         <form action="#" method="get">
                         <div>
-                            <input type="text" id="keyword1" name="keyword1">
+                            <input type="text" id="keyword1" name="keyword1" placeholder="スペースで複数キーワード可"
+                                   value="{{ and_keywords }}">
                             <button type="submit">検索</button>
                         </div>
                         </form>
@@ -41,7 +42,8 @@
                         <h3>OR条件</h3>
                         <form action="#" method="get">
                         <div>
-                            <input type="text" id="keyword2" name="keyword2">
+                            <input type="text" id="keyword2" name="keyword2" placeholder="スペースで複数キーワード可"
+                                    value="{{ or_keywords }}">
                             <button type="submit">検索</button>
                         </div>
                         </form>
